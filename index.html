@@ -1,72 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Home Reciever</title>
-    <!-- Bootstrap -->
-    <link href="css/bootstrap-4.3.1.css" rel="stylesheet">
-  </head>
-  <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div class="container">
-        <a class="navbar-brand" href="#">Swipe Me In</a>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Home Reciever</title>
+<!-- Bootstrap -->
+<link href="css/bootstrap-4.3.1.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container"> <a class="navbar-brand" href="#">Swipe Me In</a>
+<!--TODO: Text updates here according to user name-->
         <h5 class="text-right text-white">Hello, Miranda</h5>
+    </div>
+</nav>
 
-      </div>
-    </nav>
-
-<!--HIDDEN until user accepts, claimed meals bg, gradient bg-->
-    <!--grey bg if unclaimed, red bg if accepted-->
-<div class="container pt-3 bg-danger mb-3">
-        <h5 class="text-left text-white">Claimed Meals</h5>    
-        <div class="col-md-4 pb-0 p-0 bg-transparent">
-            <div class="clearfix">
-          <div class="card bg-transparent border-1 border-white mb-3">
+<!--TODO: HIDDEN until user accepts, claimed meals bg, gradient bg--> 
+<!--TODO: grey bg if unclaimed, red bg if accepted-->
+<div class="container bg-danger pt-3 mb-3">
+    <h5 class="text-left text-white">Claimed Meals</h5>
+    <div class="col-md-4 p-0 bg-transparent">
+        <div class="card bg-transparent border-1 border-white mb-3">
             <div class="card-body text-white ">
-              <h2 class="card-title">Ratty</h2>
-              <p class="card-text">Unclaimed</p>
-                </div>
-              <div class="card-body bg-light">
-                  <p class="card-text">28 min remaining</p>
-              </div>
+                <h2 class="card-title">Ratty</h2>
+                <p class="card-text">Unclaimed</p>
             </div>
-<!--HIDDEN until user accepts-->
-            <a href="#" class="btn btn-light text-danger mb-3">Confirm Swipe</a>
-          </div>
+            <div class="card-body bg-light">
+                <p class="card-text">28 min remaining</p>
+            </div>
         </div>
+<!--TODO: HIDDEN until user accepts--> 
+        <a href="#" class="btn btn-light text-danger mb-3">Confirm Swipe</a> </div>
 </div>
-<!--white bg-->
-<!--<div class="container bg-white mb-3">-->
+<!--white bg--> 
 <!--share meal button-->
-        <div class="col-md-4 pb-0">
-                <a href="#" class="btn btn-danger mb-3">Share A Meal</a>
-        </div>
-<!--achievements-->      
-        <div class="col-md-4 pb-0">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">Achievements</h5>
-              <p class="card-text">13 meals shared, $65 donated</p>
-            </div>
-          </div>
-        </div>
-<!--</div>-->
+<div class="container pt-3 mb-3">
+<a href="#" class="btn btn-danger text-white mb-3">Share a Meal</a>
     
-    <footer class="text-center">
-      <div class="container">
-        <div class="row">
-          <div class="col-12">
-            <p>Copyright © Team C. All rights reserved.</p>
-          </div>
+<!--achievements block-->
+<div class="col-md-4 p-0 bg-transparent">
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">Achievement</h5>
+            <p class="card-text">13 meals shared, $65 donated</p>
         </div>
-      </div>
-    </footer>
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="js/jquery-3.3.1.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="js/popper.min.js"></script>
-    <script src="js/bootstrap-4.3.1.js"></script>
-  </body>
+    </div>
+</div>
+<footer class="text-center">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <p>Copyright © Team C. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
+<script src="js/jquery-3.3.1.min.js"></script> 
+<!-- Include all compiled plugins (below), or include individual files as needed --> 
+<script src="js/popper.min.js"></script> 
+<script src="js/bootstrap-4.3.1.js"></script>
+</body>
 </html>
