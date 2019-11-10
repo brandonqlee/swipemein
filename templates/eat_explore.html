@@ -3,26 +3,25 @@
 {% block body %}
 <!--TODO: Appear when meal claimed-->
 <div class="container pt-3 pb-3 mb-3">
+    {% if session['curr_meal'] != []%}
     <h5 class="text-left">Claimed Meals</h5>
-    <div class="col-md-4 p-0">
+    {% for meal in session['curr_meal'] %}
+    <div class="col-md-12 p-0">
         <div class="card bg-danger border-1 mb-3">
             <div class="card-body text-white ">
-                <h2 class="card-title">Ratty</h2>
-                <p class="card-text">Unclaimed</p>
+                <h2 class="card-title">{{meal['meal_location']}}</h2>
+                <p class="card-text">{{meal['first_name']}}</p>
             </div>
             <div class="card-body bg-light">
-                <p class="card-text">28 min remaining</p>
+                <p class="card-text">{{meal['time_end']}} hours remaining</p>
             </div>
         </div>
     </div>
+    {%endfor%}
+    {%endif%}
 </div>
-
-
-
-
-
 <div class="container">
-        <h5 class="text-left">Explore</h5>
+<h5 class="text-left">Explore</h5>
 <!--Ratty carousel-->
 <div class="container p-0 mb-5">
     <h2 class="text-left">Ratty</h2>
@@ -30,10 +29,8 @@
     <h5 class="text-left">Currently no meals shared.</h5>
     {% else %}
 
-    <div id="rattyCar" class="carousel slide" data-ride="carousel">
+<div id="rattyCar" class="carousel slide" data-ride="carousel">
   <div class="carousel-inner">
-
-
       {% for meal in session['ratty'] %}
       {% if meal['first_card'] == True %}
       <div class="carousel-item active">
@@ -48,27 +45,26 @@
                 </div>
                 <div class="card-body bg-light">
                     <p class="card-text">{{meal['time_end']}} hours remaining</p>
-                    <a href="#" class="btn btn-warning">Claim Meal</a>
+                    <form class="" action="/eater_claim" method="post">
+                      <button name="claim" type="submit" value={{meal['swipe_id']}} class="btn btn-warning">Claim Meal</button>
+                    </form>
                 </div>
             </div>
         </div>
       </div>
       {% endfor %}
-
-
   </div>
-        <div class="col-md-1 p-0">
+  <div class="col-md-12 p-0">
   <a class="carousel-control-prev" href="#rattyCar" role="button" data-slide="prev">
     <span class="carousel-control-prev-icon bg-dark" aria-hidden="true"></span>
     <span class="sr-only">Previous</span>
   </a>
-        </div>
-        <div class="col-md-1 p-0">
+</div>
+        <div class="col-md-12 p-0">
   <a class="carousel-control-next" href="#rattyCar" role="button" data-slide="next">
     <span class="carousel-control-next-icon bg-dark" aria-hidden="true"></span>
     <span class="sr-only">Next</span>
   </a>
-            </div>
 </div>
 </div>
 {% endif %}
@@ -81,7 +77,7 @@
     <h5 class="text-left">Currently no meals shared.</h5>
     {% else %}
 
-    <div id="rattyCar" class="carousel slide" data-ride="carousel">
+    <div id="vdubCar" class="carousel slide" data-ride="carousel">
   <div class="carousel-inner">
       {% for meal in session['vdub'] %}
       {% if meal['first_card'] == True %}
@@ -97,7 +93,9 @@
                 </div>
                 <div class="card-body bg-light">
                     <p class="card-text">{{meal['time_end']}} hours remaining</p>
-                    <a href="#" class="btn btn-warning">Claim Meal</a>
+                    <form class="" action="/eater_claim" method="post">
+                      <button name="claim" type="submit" value={{meal['swipe_id']}} class="btn btn-warning">Claim Meal</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -106,19 +104,18 @@
 
 
   </div>
-        <div class="col-md-1 p-0">
-  <a class="carousel-control-prev" href="#rattyCar" role="button" data-slide="prev">
+        <div class="col-md-12 p-0">
+  <a class="carousel-control-prev" href="#vdubCar" role="button" data-slide="prev">
     <span class="carousel-control-prev-icon bg-dark" aria-hidden="true"></span>
     <span class="sr-only">Previous</span>
   </a>
         </div>
-        <div class="col-md-1 p-0">
-  <a class="carousel-control-next" href="#rattyCar" role="button" data-slide="next">
+        <div class="col-md-12 p-0">
+  <a class="carousel-control-next" href="#vdubCar" role="button" data-slide="next">
     <span class="carousel-control-next-icon bg-dark" aria-hidden="true"></span>
     <span class="sr-only">Next</span>
   </a>
             </div>
-</div>
 </div>
 {% endif %}
 </div>
@@ -130,7 +127,7 @@
     <h5 class="text-left">Currently no meals shared.</h5>
     {% else %}
 
-    <div id="rattyCar" class="carousel slide" data-ride="carousel">
+    <div id="andrewsCar" class="carousel slide" data-ride="carousel">
   <div class="carousel-inner">
       {% for meal in session['andrews'] %}
       {% if meal['first_card'] == True %}
@@ -146,7 +143,9 @@
                 </div>
                 <div class="card-body bg-light">
                     <p class="card-text">{{meal['time_end']}} hours remaining</p>
-                    <a href="#" class="btn btn-warning">Claim Meal</a>
+                    <form class="" action="/eater_claim" method="post">
+                      <button name="claim" type="submit" value={{meal['swipe_id']}} class="btn btn-warning">Claim Meal</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -155,19 +154,18 @@
 
 
   </div>
-        <div class="col-md-1 p-0">
-  <a class="carousel-control-prev" href="#rattyCar" role="button" data-slide="prev">
+        <div class="col-md-12 p-0">
+  <a class="carousel-control-prev" href="#andrewsCar" role="button" data-slide="prev">
     <span class="carousel-control-prev-icon bg-dark" aria-hidden="true"></span>
     <span class="sr-only">Previous</span>
   </a>
         </div>
-        <div class="col-md-1 p-0">
-  <a class="carousel-control-next" href="#rattyCar" role="button" data-slide="next">
+        <div class="col-md-12 p-0">
+  <a class="carousel-control-next" href="#andrewsCar" role="button" data-slide="next">
     <span class="carousel-control-next-icon bg-dark" aria-hidden="true"></span>
     <span class="sr-only">Next</span>
   </a>
             </div>
-</div>
 </div>
 {% endif %}
 </div>
@@ -179,7 +177,7 @@
     <h5 class="text-left">Currently no meals shared.</h5>
     {% else %}
 
-    <div id="rattyCar" class="carousel slide" data-ride="carousel">
+    <div id="josCar" class="carousel slide" data-ride="carousel">
   <div class="carousel-inner">
       {% for meal in session['jos'] %}
       {% if meal['first_card'] == True %}
@@ -195,7 +193,9 @@
                 </div>
                 <div class="card-body bg-light">
                     <p class="card-text">{{meal['time_end']}} hours remaining</p>
-                    <a href="#" class="btn btn-warning">Claim Meal</a>
+                    <form class="" action="/eater_claim" method="post">
+                      <button name="claim" type="submit" value={{meal['swipe_id']}} class="btn btn-warning">Claim Meal</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -204,19 +204,18 @@
 
 
   </div>
-        <div class="col-md-1 p-0">
-  <a class="carousel-control-prev" href="#rattyCar" role="button" data-slide="prev">
+        <div class="col-md-12 p-0">
+  <a class="carousel-control-prev" href="#josCar" role="button" data-slide="prev">
     <span class="carousel-control-prev-icon bg-dark" aria-hidden="true"></span>
     <span class="sr-only">Previous</span>
   </a>
         </div>
-        <div class="col-md-1 p-0">
-  <a class="carousel-control-next" href="#rattyCar" role="button" data-slide="next">
+        <div class="col-md-12 p-0">
+  <a class="carousel-control-next" href="#josCar" role="button" data-slide="next">
     <span class="carousel-control-next-icon bg-dark" aria-hidden="true"></span>
     <span class="sr-only">Next</span>
   </a>
             </div>
-</div>
 </div>
 {% endif %}
 </div>
@@ -228,7 +227,7 @@
     <h5 class="text-left">Currently no meals shared.</h5>
     {% else %}
 
-    <div id="rattyCar" class="carousel slide" data-ride="carousel">
+    <div id="blueroomCar" class="carousel slide" data-ride="carousel">
   <div class="carousel-inner">
       {% for meal in session['blueroom'] %}
       {% if meal['first_card'] == True %}
@@ -244,7 +243,9 @@
                 </div>
                 <div class="card-body bg-light">
                     <p class="card-text">{{meal['time_end']}} hours remaining</p>
-                    <a href="#" class="btn btn-warning">Claim Meal</a>
+                    <form class="" action="/eater_claim" method="post">
+                      <button name="claim" type="submit" value={{meal['swipe_id']}} class="btn btn-warning">Claim Meal</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -253,19 +254,18 @@
 
 
   </div>
-        <div class="col-md-1 p-0">
-  <a class="carousel-control-prev" href="#rattyCar" role="button" data-slide="prev">
+        <div class="col-md-12 p-0">
+  <a class="carousel-control-prev" href="#blueroomCar" role="button" data-slide="prev">
     <span class="carousel-control-prev-icon bg-dark" aria-hidden="true"></span>
     <span class="sr-only">Previous</span>
   </a>
         </div>
-        <div class="col-md-1 p-0">
-  <a class="carousel-control-next" href="#rattyCar" role="button" data-slide="next">
+        <div class="col-md-12 p-0">
+  <a class="carousel-control-next" href="#blueroomCar" role="button" data-slide="next">
     <span class="carousel-control-next-icon bg-dark" aria-hidden="true"></span>
     <span class="sr-only">Next</span>
   </a>
             </div>
-</div>
 </div>
 {% endif %}
 </div>
@@ -277,7 +277,7 @@
     <h5 class="text-left">Currently no meals shared.</h5>
     {% else %}
 
-    <div id="rattyCar" class="carousel slide" data-ride="carousel">
+    <div id="ivyroomCar" class="carousel slide" data-ride="carousel">
   <div class="carousel-inner">
       {% for meal in session['ivyroom'] %}
       {% if meal['first_card'] == True %}
@@ -293,7 +293,9 @@
                 </div>
                 <div class="card-body bg-light">
                     <p class="card-text">{{meal['time_end']}} hours remaining</p>
-                    <a href="#" class="btn btn-warning">Claim Meal</a>
+                    <form class="" action="/eater_claim" method="post">
+                      <button name="claim" type="submit" value={{meal['swipe_id']}} class="btn btn-warning">Claim Meal</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -302,29 +304,27 @@
 
 
   </div>
-        <div class="col-md-1 p-0">
-  <a class="carousel-control-prev" href="#rattyCar" role="button" data-slide="prev">
+        <div class="col-md-12 p-0">
+  <a class="carousel-control-prev" href="#ivyroomCar" role="button" data-slide="prev">
     <span class="carousel-control-prev-icon bg-dark" aria-hidden="true"></span>
     <span class="sr-only">Previous</span>
   </a>
         </div>
-        <div class="col-md-1 p-0">
-  <a class="carousel-control-next" href="#rattyCar" role="button" data-slide="next">
+        <div class="col-md-12 p-0">
+  <a class="carousel-control-next" href="#ivyroomCar" role="button" data-slide="next">
     <span class="carousel-control-next-icon bg-dark" aria-hidden="true"></span>
     <span class="sr-only">Next</span>
   </a>
             </div>
-</div>
 </div>
 {% endif %}
 </div>
 </div>
 
 <!--Test confirm payment-->
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmPay">Test Confirmation</button>
+<!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmPay">Test Confirmation</button> -->
 
 
-<!--TODO: Following modals will pop up when feeder clicks confirm swipe-->
 <!-- Confirm Pay Modal -->
 <div class="modal fade" id="confirmPay" tabindex="-1" role="dialog" aria-labelledby="confirmPay" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
@@ -336,7 +336,7 @@
         </button>
       </div>
       <div class="modal-body">
-        Confirm that on November 8, 12:30 PM, $5.00 will be deducted from your account and donated to GiveDirectly.
+        Confirm that $5.00 will be deducted from your account and donated to Second Harvest FoodBank.
       </div>
       <div class="modal-footer">
         <a data-toggle="modal" data-dismiss="modal" href="#confirmThanks"><button type="button" class="btn btn-primary">Confirm</button></a>
@@ -356,47 +356,7 @@
         </button>
       </div>
       <div class="modal-body">
-        You just donated $5.00 to a family in Kenya through Swipe Me In.
-      </div>
-      <div class="modal-footer">
-          Help us improve! How was your experience with us today?
-        <a data-toggle="modal" data-dismiss="modal" href="#improveGood"><button type="button" class="btn btn-primary">Good</button></a>
-        <a data-toggle="modal" data-dismiss="modal" href="#improveBad"><button type="button" class="btn btn-primary">Bad</button></a>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!--Improve Good Text Replacement-->
-<div class="modal fade" id="improveGood" tabindex="-1" role="dialog" aria-labelledby="improveBad" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">We appreciate your feedback &#128525;</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!--Improve Bad Modal-->
-<div class="modal fade" id="improveBad" tabindex="-1" role="dialog" aria-labelledby="improveBad" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">How can we improve?</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-    <input class="form-control" type="text" placeholder="Type message here..." aria-label="Search">
-      </div>
-      <div class="modal-footer">
-<!--TODO: Record improvement comments-->
-        <a data-toggle="modal" data-dismiss="modal" href="#improveGood"><button type="submit" class="btn btn-primary">Submit</button></a>
+        You just donated $5.00 to Second Harvest FoodBank through Swipe Me In.
       </div>
     </div>
   </div>

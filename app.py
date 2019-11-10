@@ -43,6 +43,39 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' % self.email
 
+# Check if user logged in
+def is_logged_in(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'logged_in' in session:
+            return f(*args, **kwargs)
+        else:
+            flash('Please log in first.', 'danger')
+            return redirect(url_for('login'))
+    return wrap
+
+# Check if user is feeder
+def is_feeder(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if session['has_swipes'] == True:
+            return f(*args, **kwargs)
+        else:
+            flash('You are not a feeder.', 'danger')
+            return redirect(url_for('eat_explore'))
+    return wrap
+
+# Check if user is eater
+def is_eater(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if session['has_swipes'] == False:
+            return f(*args, **kwargs)
+        else:
+            flash('You are not a eater.', 'danger')
+            return redirect(url_for('feed_shareMeal'))
+    return wrap
+
 # db.create_all()
 # db.session.commit()
 
@@ -159,22 +192,30 @@ def login():
         return render_template('login.html')
 
 
-# first and return page for donater
+# first and return page for feeder
 @app.route('/feed_shareMeal')
+@is_feeder
+@is_logged_in
 def feed_shareMeal():
     feeder_meals = UnclaimedMeals.query.filter_by(user_id=session['id']).all()
     session['feeder_meals'] = []
     for meal in feeder_meals:
-        swipe = {}
-        swipe['swipe_claimed'] = meal.swipe_claimed
-        swipe['swipe_id'] = meal.swipe_id
-        swipe['meal_location'] = meal.meal_location
-        swipe['time_end'] = meal.time_end
-        swipe['intro_message'] = meal.intro_message
-        swipe['swipe_confirmed'] = meal.swipe_confirmed
-        swipe['eater_id'] = meal.eater_id
+        if meal.swipe_confirmed == True:
+            # delete brown
+            db.session.delete(meal)
+            db.session.commit()
+        else:
+            swipe = {}
+            swipe['swipe_claimed'] = meal.swipe_claimed
+            swipe['swipe_id'] = meal.swipe_id
+            swipe['meal_location'] = meal.meal_location
+            swipe['time_end'] = meal.time_end
+            swipe['intro_message'] = meal.intro_message
+            # swipe['swipe_confirmed'] = meal.swipe_confirmed
+            swipe['eater_id'] = meal.eater_id
+            swipe['first_name'] = User.query.filter_by(id=meal.user_id).first().first_name
 
-        session['feeder_meals'].append(swipe)
+            session['feeder_meals'].append(swipe)
     return render_template('feed_shareMeal.html')
 
 
@@ -206,9 +247,9 @@ class UnclaimedMeals(db.Model):
 # Form to share a meal, has the details of unclaimed meals
 class ShareMealForm(Form):
     meal_location = SelectField(
-            'Location',
+            'Location:',
             [validators.DataRequired(message='Please enter your location')],
-            choices=[('andrews', 'Andrews Commons'), ('vdub', 'V-Dub'), ('ratty', 'Ratty'), ('jos',"Jo's"), ('blueroom', 'Blue Room'), ('ivyroom', 'Ivy Room')]
+            choices=[('Andrews Commons', 'Andrews Commons'), ('V-Dub', 'V-Dub'), ('Ratty', 'Ratty'), ("Jo's","Jo's"), ('Blue Room', 'Blue Room'), ('Ivy Room', 'Ivy Room')]
         )
     # time_begin = DateField('From: ', [
     #     validators.DataRequired(message = 'Please use the correct format: YYYY-MM-DD (Ex: 2019-03-14)')
@@ -216,54 +257,22 @@ class ShareMealForm(Form):
     # time_begin = DateField('From: ', [
     #     validators.DataRequired(message = 'Please use the correct format --> MM-DD-YYYY hour:minutes am/pm  (Ex: 10-08-2019 10:30 am)')
     # ], format = '%m-%d-%Y %H:%M %p')
-    time_begin = TimeField('From: ', [
+    time_begin = TimeField('From What Time: ', [
         validators.DataRequired(message = 'Please use the correct format --> hour:minutes (Ex: 10:30)')
     ], format = '%H:%M')
-    time_end = SelectField('To: ', [
+    time_end = SelectField('For How Long: ', [
         validators.DataRequired('Please enter how long you will stay here for')
     ], choices=[('.25','15 minutes'), ('.5', '30 minutes'), ('.75', '45 minutes'), ('1', '1 hour'), ('1.25', '1 hour 15 minutes'), ('1.5', '1 hour 30 minutes'), ('1.75', '1 hour 45 minutes'), ('2', '2 hours')]
     )
 
-    intro_message = StringField('Introductory Message', [
+    intro_message = StringField('Introductory Message:', [
         validators.DataRequired(message='Please enter a message to introduce yourself')
     ])
 
-
-# # Share a meal
-# @app.route('/feed_details', methods=['GET', 'POST'])
-# def feed_details():
-#     # form = ShareMealForm(request.form)
-#     print("hello", request.method)
-#     if request.method == 'POST' and form.validate():
-#         meal_location = request.form['meal_location']
-#
-#         print(meal_location)
-#
-#         time_begin = request.form['time_begin']
-#         time_end = request.form['time_end']
-#         intro_message = request.form['intro_message']
-#         swipe_claimed = False
-#         user_id = session['id']
-#
-#         new_swipe = UnclaimedMeals(user_id, meal_location, swipe_claimed, time_begin, time_end, intro_message)
-#
-#         try:
-#             # Add new user to db
-#             db.session.add(new_swipe)
-#             db.session.commit()
-#             # Sucessfully added new user to db, redirect to login
-#             flash('You have successfully submitted a swipe!', 'success')
-#             return redirect(url_for('feed_shareMeal'))
-#         # Catch other server exceptions
-#         except Exception as error:
-#             flash('Server is busy, please try again later.', 'danger')
-#             return render_template('feed_details.html')
-#     # GET method
-#     else:
-#         return render_template('feed_details.html')
-
 # Share a meal
 @app.route('/feed_details', methods=['GET', 'POST'])
+@is_logged_in
+@is_feeder
 def feed_details():
     form = ShareMealForm(request.form)
     if request.method == 'POST' and form.validate():
@@ -296,22 +305,35 @@ def feed_details():
 
 # first page for receiver
 @app.route('/eat_explore')
+@is_logged_in
+@is_eater
 def eat_explore():
     eateries = ['andrews', 'jos', 'blueroom', 'ivyroom', 'vdub', 'ratty']
+
+    session['curr_meal'] = []
 
     for eatery in eateries:
         session[eatery] = []
         count = 0
         meals_available = UnclaimedMeals.query.filter_by(swipe_confirmed=False, meal_location=eatery).all()
+
         for meal in meals_available:
             swipe = {}
-            swipe['swipe_claimed'] = meal.swipe_claimed
             swipe['swipe_id'] = meal.swipe_id
             swipe['first_name'] = User.query.filter_by(id=meal.user_id).first().first_name
             swipe['meal_location'] = meal.meal_location
             swipe['time_end'] = meal.time_end
+
+            if meal.eater_id == session['id'] and meal.swipe_claimed == True:
+                session['curr_meal'].append(swipe)
+                continue
+            swipe['swipe_claimed'] = meal.swipe_claimed
+            # swipe['swipe_id'] = meal.swipe_id
+            # swipe['first_name'] = User.query.filter_by(id=meal.user_id).first().first_name
+            # swipe['meal_location'] = meal.meal_location
+            # swipe['time_end'] = meal.time_end
             swipe['intro_message'] = meal.intro_message
-            swipe['swipe_confirmed'] = meal.swipe_confirmed
+            # swipe['swipe_confirmed'] = meal.swipe_confirmed
             swipe['eater_id'] = meal.eater_id
             if count == 0:
                 swipe['first_card'] = True
@@ -319,44 +341,36 @@ def eat_explore():
             else:
                 swipe['first_card'] = False
             session[eatery].append(swipe)
-    #
-    # session['feeder_meals'] = []
-    # count = 0
-    # for meal in meals_available:
-    #     swipe = {}
-    #     swipe['swipe_claimed'] = meal.swipe_claimed
-    #     swipe['swipe_id'] = meal.swipe_id
-    #     swipe['first_name'] = User.query.filter_by(id=meal.user_id).first().first_name
-    #     swipe['meal_location'] = meal.meal_location
-    #     swipe['time_end'] = meal.time_end
-    #     swipe['intro_message'] = meal.intro_message
-    #     swipe['swipe_confirmed'] = meal.swipe_confirmed
-    #     swipe['eater_id'] = meal.eater_id
-    #     if count == 0:
-    #         swipe['first_card'] = True
-    #         count += 1
-    #     else:
-    #         swipe['first_card'] = False
-    #     session['feeder_meals'].append(swipe)
-    # for meal in session['feeder_meals']:
-    #     print(meal['time_end'])
+
+    for meal in session['curr_meal']:
+        print("mealAfter: ",meal)
     return render_template('eat_explore.html')
 
+@app.route('/eater_claim', methods=['POST'])
+def eater_claim():
+    swipe_id = request.form.get('claim')
+    curr_meal = UnclaimedMeals.query.filter_by(swipe_id = swipe_id).first()
+    curr_meal.swipe_claimed = True
+    curr_meal.eater_id = session['id']
+    db.session.commit()
+    return redirect(url_for('eat_explore'))
+    # claimed meal
 
-        # feeder_meals = UnclaimedMeals.query.filter_by(user_id=session['id']).all()
-        # session['feeder_meals'] = []
-        # for meal in feeder_meals:
-        #     swipe = {}
-        #     swipe['swipe_claimed'] = meal.swipe_claimed
-        #     swipe['swipe_id'] = meal.swipe_id
-        #     swipe['meal_location'] = meal.meal_location
-        #     swipe['time_end'] = meal.time_end
-        #     swipe['intro_message'] = meal.intro_message
-        #     swipe['swipe_confirmed'] = meal.swipe_confirmed
-        #     swipe['eater_id'] = meal.eater_id
-        #
-        #     session['feeder_meals'].append(swipe)
-        # return render_template('feed_shareMeal.html')
+@app.route('/feeder_confirm', methods=['POST'])
+def feeder_confirm():
+    swipe_id = request.form.get('confirm')
+    curr_meal = UnclaimedMeals.query.filter_by(swipe_id = swipe_id).first()
+    curr_meal.swipe_confirmed = True
+    db.session.commit()
+    return ('', 204)
+    # dbsession.delete(curr_meal)
+    # session.commit()
+    # db.session.commit()
+
+@app.route('/feeder_thanks', methods=['POST'])
+def feeder_thanks():
+    swipe_id = request.form.get('confirm')
+    return redirect(url_for('feed_shareMeal'))
 
 @app.route('/logout')
 def logout():
