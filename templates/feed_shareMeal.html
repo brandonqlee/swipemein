@@ -8,27 +8,46 @@
     </div>
 </nav>
 
+<div id="unclaimed_meal" class="container pt-3 mb-3">
+  <h5 class="text-left text-white">Claimed Meals</h5>
+
+{% for meal in session['feeder_meals'] %}
+
+  {% if meal.swipe_claimed == True %}
+
 <!--TODO: HIDDEN until user accepts, claimed meals bg, gradient bg-->
 <!--TODO: grey bg if unclaimed, red bg if accepted-->
-<div class="container bg-danger pt-3 mb-3">
-    <h5 class="text-left text-white">Claimed Meals</h5>
     <div class="col-md-4 p-0 bg-transparent">
-        <div class="card bg-transparent border-1 border-white mb-3">
+        <div class="card bg-danger border-1 mb-3">
             <div class="card-body text-white ">
                 <h2 class="card-title">Ratty</h2>
-                <p class="card-text">Unclaimed</p>
+                <p class="card-text">Claimed but not confirmed</p>
+            </div>
+            <div class="card-body bg-light">
+                <p class="card-text">28 min remaining</p>
+                <a href="#" class="btn btn-danger text-light">Confirm Swipe</a>
+            </div>
+        </div>
+  {% else %}
+    <div class="col-md-4 p-0 bg-transparent">
+        <div class="card bg-dark border-1 mb-3">
+            <div class="card-body text-white ">
+                <h2 class="card-title">Ratty</h2>
+                <p class="card-text">Not claimed yet</p>
             </div>
             <div class="card-body bg-light">
                 <p class="card-text">28 min remaining</p>
             </div>
         </div>
-<!--TODO: HIDDEN until user accepts-->
-        <a href="#" class="btn btn-light text-danger mb-3">Confirm Swipe</a> </div>
+  </div>
+{% endif %}
+{% endfor %}
 </div>
+
 <!--white bg-->
 <!--share meal button-->
 <div class="container pt-3 mb-3">
-<a href="#" class="btn btn-danger text-white mb-3">Share a Meal</a>
+<a href="/feed_details" class="btn btn-danger text-white mb-3">Share a Meal</a>
 
 <!--achievements block-->
 <div class="col-md-4 p-0 bg-transparent">
