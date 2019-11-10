@@ -298,27 +298,48 @@ def feed_details():
 @app.route('/eat_explore')
 def eat_explore():
     eateries = ['andrews', 'jos', 'blueroom', 'ivyroom', 'vdub', 'ratty']
-    meals_available = UnclaimedMeals.query.filter_by(swipe_confirmed=False).all()
-    session['feeder_meals'] = []
-    count = 0
-    for meal in meals_available:
-        swipe = {}
-        swipe['swipe_claimed'] = meal.swipe_claimed
-        swipe['swipe_id'] = meal.swipe_id
-        swipe['first_name'] = User.query.filter_by(id=meal.user_id).first().first_name
-        swipe['meal_location'] = meal.meal_location
-        swipe['time_end'] = meal.time_end
-        swipe['intro_message'] = meal.intro_message
-        swipe['swipe_confirmed'] = meal.swipe_confirmed
-        swipe['eater_id'] = meal.eater_id
-        if count == 0:
-            swipe['first_card'] = True
-            count += 1
-        else:
-            swipe['first_card'] = False
-        session['feeder_meals'].append(swipe)
-    for meal in session['feeder_meals']:
-        print(meal['time_end'])
+
+    for eatery in eateries:
+        session[eatery] = []
+        count = 0
+        meals_available = UnclaimedMeals.query.filter_by(swipe_confirmed=False, meal_location=eatery).all()
+        for meal in meals_available:
+            swipe = {}
+            swipe['swipe_claimed'] = meal.swipe_claimed
+            swipe['swipe_id'] = meal.swipe_id
+            swipe['first_name'] = User.query.filter_by(id=meal.user_id).first().first_name
+            swipe['meal_location'] = meal.meal_location
+            swipe['time_end'] = meal.time_end
+            swipe['intro_message'] = meal.intro_message
+            swipe['swipe_confirmed'] = meal.swipe_confirmed
+            swipe['eater_id'] = meal.eater_id
+            if count == 0:
+                swipe['first_card'] = True
+                count += 1
+            else:
+                swipe['first_card'] = False
+            session[eatery].append(swipe)
+    #
+    # session['feeder_meals'] = []
+    # count = 0
+    # for meal in meals_available:
+    #     swipe = {}
+    #     swipe['swipe_claimed'] = meal.swipe_claimed
+    #     swipe['swipe_id'] = meal.swipe_id
+    #     swipe['first_name'] = User.query.filter_by(id=meal.user_id).first().first_name
+    #     swipe['meal_location'] = meal.meal_location
+    #     swipe['time_end'] = meal.time_end
+    #     swipe['intro_message'] = meal.intro_message
+    #     swipe['swipe_confirmed'] = meal.swipe_confirmed
+    #     swipe['eater_id'] = meal.eater_id
+    #     if count == 0:
+    #         swipe['first_card'] = True
+    #         count += 1
+    #     else:
+    #         swipe['first_card'] = False
+    #     session['feeder_meals'].append(swipe)
+    # for meal in session['feeder_meals']:
+    #     print(meal['time_end'])
     return render_template('eat_explore.html')
 
 

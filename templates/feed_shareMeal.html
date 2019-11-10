@@ -20,11 +20,11 @@
     <div class="col-md-4 p-0 bg-transparent">
         <div class="card bg-danger border-1 mb-3">
             <div class="card-body text-white ">
-                <h2 class="card-title">Ratty</h2>
+                <h2 class="card-title">{{meal['meal_location']}}</h2>
                 <p class="card-text">Claimed but not confirmed</p>
             </div>
             <div class="card-body bg-light">
-                <p class="card-text">28 min remaining</p>
+                <p class="card-text">{{meal['time_end']}} hours remaining</p>
                 <a href="#" class="btn btn-danger text-light">Confirm Swipe</a>
             </div>
         </div>
@@ -32,11 +32,11 @@
     <div class="col-md-4 p-0 bg-transparent">
         <div class="card bg-dark border-1 mb-3">
             <div class="card-body text-white ">
-                <h2 class="card-title">Ratty</h2>
+                <h2 class="card-title">{{meal['meal_location']}}</h2>
                 <p class="card-text">Not claimed yet</p>
             </div>
             <div class="card-body bg-light">
-                <p class="card-text">28 min remaining</p>
+                <p class="card-text">{{meal['time_end']}} hours remaining</p>
             </div>
         </div>
   </div>
