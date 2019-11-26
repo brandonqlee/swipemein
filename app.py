@@ -8,7 +8,7 @@ import datetime
 import pytz
 from werkzeug.datastructures import MultiDict
 import os
-
+from flask_heroku import Heroku
 from datetime import time
 
 app = Flask(__name__)
@@ -17,7 +17,7 @@ app = Flask(__name__)
 # app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/swipe'
-
+heroku = Heroku(app)
 db = SQLAlchemy(app)
 
 
