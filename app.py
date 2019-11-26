@@ -16,7 +16,7 @@ app = Flask(__name__)
 # app.secret_key = 'super secret key'
 # app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/swipe'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/swipe' if 'HEROKU' not in os.environ else os.environ['DATABASE_URL']
 heroku = Heroku(app)
 db = SQLAlchemy(app)
 
