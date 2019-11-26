@@ -12,9 +12,7 @@ from flask_heroku import Heroku
 from datetime import time
 
 app = Flask(__name__)
-# app.config.from_object(os.environ['APP_SETTINGS'])
-# app.secret_key = 'super secret key'
-# app.config['SESSION_TYPE'] = 'filesystem'
+app.secret_key = 'teamc4ever'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/swipe' if 'HEROKU' not in os.environ else os.environ['DATABASE_URL']
 heroku = Heroku(app)
