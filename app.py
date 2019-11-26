@@ -14,6 +14,7 @@ from datetime import time
 app = Flask(__name__)
 app.secret_key = 'teamc4ever'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/swipe' if 'HEROKU' not in os.environ else os.environ['DATABASE_URL']
 heroku = Heroku(app)
 db = SQLAlchemy(app)
