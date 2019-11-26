@@ -20,14 +20,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/swipe' if 'HEROK
 heroku = Heroku(app)
 db = SQLAlchemy(app)
 
-
-def get_db_url():
-  return 'postgresql://postgres:vhTmCm0314)#!$@localhost/swipe' if is_production() else 'postgresql://postgres:vhTmCm0314)#!$@localhost/swipe'
-
-# be sure not to create this env locally
-def is_production():
-  return 'HEROKU' in os.environ
-
 # Create database model
 class User(db.Model):
     __tablename__ = "users"
@@ -388,7 +380,3 @@ def logout():
 if __name__ == '__main__':
     app.secret_key = 'teamc4ever'
     app.run(debug=True)
-
-
-# db.create_all()
-# db.session.commit()
