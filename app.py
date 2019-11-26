@@ -8,20 +8,28 @@ import datetime
 import pytz
 from werkzeug.datastructures import MultiDict
 from flask_migrate import Migrate
+import os
 
 from datetime import time
 
 app = Flask(__name__)
 # app.config.from_object(os.environ['APP_SETTINGS'])
-app.secret_key = 'super secret key'
-app.config['SESSION_TYPE'] = 'filesystem'
+# app.secret_key = 'super secret key'
+# app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:vhTmCm0314)#!$@localhost/swipe'
+app.config['SQLALCHEMY_DATABASE_URI'] = get_db_url()
 
 db = SQLAlchemy(app)
 # migrate = Migrate(app, db)
 # print('working tree')
 
+
+def get_db_url():
+  return 'postgresql://postgres:vhTmCm0314)#!$@localhost/swipe' if is_production() else 'postgresql://postgres:vhTmCm0314)#!$@localhost/swipe'
+
+# be sure not to create this env locally
+def is_production():
+  return 'HEROKU' in os.environ
 
 # Create database model
 class User(db.Model):
@@ -81,11 +89,7 @@ def is_eater(f):
             flash('You are not a eater.', 'danger')
             return redirect(url_for('feed_shareMeal'))
     return wrap
-# erica = User('Erica', 'Li', 'b@email.com', 'pw', True, datetime.datetime.today(), 3, 4)
-# db.session.add(erica)
-# db.session.commit()
-# c = User.query.all()
-# print(c)
+
 
 @app.route('/')
 def index():
@@ -389,5 +393,5 @@ if __name__ == '__main__':
     app.run(debug=True)
 
 
-db.create_all()
-db.session.commit()
+# db.create_all()
+# db.session.commit()
