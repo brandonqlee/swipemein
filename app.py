@@ -7,15 +7,21 @@ from functools import wraps
 import datetime
 import pytz
 from werkzeug.datastructures import MultiDict
+from flask_migrate import Migrate
 
 from datetime import time
 
 app = Flask(__name__)
 # app.config.from_object(os.environ['APP_SETTINGS'])
+app.secret_key = 'super secret key'
+app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:vhTmCm0314)#!$@localhost/swipe-me-in'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:vhTmCm0314)#!$@localhost/swipe'
 
 db = SQLAlchemy(app)
+# migrate = Migrate(app, db)
+# print('working tree')
+
 
 # Create database model
 class User(db.Model):
@@ -75,12 +81,7 @@ def is_eater(f):
             flash('You are not a eater.', 'danger')
             return redirect(url_for('feed_shareMeal'))
     return wrap
-
-# db.create_all()
-# db.session.commit()
-
-# erica = User('Erica', 'Li', 'b@email.com', 'pw', True, datetime.datetime.today())
-#
+# erica = User('Erica', 'Li', 'b@email.com', 'pw', True, datetime.datetime.today(), 3, 4)
 # db.session.add(erica)
 # db.session.commit()
 # c = User.query.all()
@@ -144,6 +145,7 @@ def register():
             return render_template('register.html', form=form)
         # Catch other server exceptions
         except Exception as error:
+            print(error)
             flash('Server is busy, please try again later.', 'danger')
             return render_template('register.html', form=form)
     # GET method
@@ -208,7 +210,7 @@ def feed_shareMeal():
             swipe = {}
             swipe['swipe_claimed'] = meal.swipe_claimed
             swipe['swipe_id'] = meal.swipe_id
-            swipe['meal_location'] = meal.meal_location
+            swipe['meal_location'] = meal.meal_location[0].upper() + meal.meal_location[1:]
             swipe['time_end'] = meal.time_end
             swipe['intro_message'] = meal.intro_message
             # swipe['swipe_confirmed'] = meal.swipe_confirmed
@@ -249,7 +251,7 @@ class ShareMealForm(Form):
     meal_location = SelectField(
             'Location:',
             [validators.DataRequired(message='Please enter your location')],
-            choices=[('Andrews Commons', 'Andrews Commons'), ('V-Dub', 'V-Dub'), ('Ratty', 'Ratty'), ("Jo's","Jo's"), ('Blue Room', 'Blue Room'), ('Ivy Room', 'Ivy Room')]
+            choices=[('andrews', 'Andrews Commons'), ('vdub', 'V-Dub'), ('ratty', 'Ratty'), ("jos","Jo's"), ('blueroom', 'Blue Room'), ('ivyroom', 'Ivy Room')]
         )
     # time_begin = DateField('From: ', [
     #     validators.DataRequired(message = 'Please use the correct format: YYYY-MM-DD (Ex: 2019-03-14)')
@@ -315,7 +317,7 @@ def eat_explore():
     for eatery in eateries:
         session[eatery] = []
         count = 0
-        meals_available = UnclaimedMeals.query.filter_by(swipe_confirmed=False, meal_location=eatery).all()
+        meals_available = UnclaimedMeals.query.filter_by(swipe_confirmed=False, meal_location=eatery.strip()).all()
 
         for meal in meals_available:
             swipe = {}
@@ -323,6 +325,8 @@ def eat_explore():
             swipe['first_name'] = User.query.filter_by(id=meal.user_id).first().first_name
             swipe['meal_location'] = meal.meal_location
             swipe['time_end'] = meal.time_end
+
+            print('swipes', swipe)
 
             if meal.eater_id == session['id'] and meal.swipe_claimed == True:
                 session['curr_meal'].append(swipe)
@@ -341,6 +345,8 @@ def eat_explore():
             else:
                 swipe['first_card'] = False
             session[eatery].append(swipe)
+
+        print(meals_available, session[eatery], session['curr_meal'], eateries)
 
     for meal in session['curr_meal']:
         print("mealAfter: ",meal)
@@ -381,3 +387,7 @@ def logout():
 if __name__ == '__main__':
     app.secret_key = 'teamc4ever'
     app.run(debug=True)
+
+
+db.create_all()
+db.session.commit()
