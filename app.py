@@ -7,7 +7,6 @@ from functools import wraps
 import datetime
 import pytz
 from werkzeug.datastructures import MultiDict
-from flask_migrate import Migrate
 import os
 
 from datetime import time
@@ -17,11 +16,9 @@ app = Flask(__name__)
 # app.secret_key = 'super secret key'
 # app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = get_db_url()
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/swipe'
 
 db = SQLAlchemy(app)
-# migrate = Migrate(app, db)
-# print('working tree')
 
 
 def get_db_url():
